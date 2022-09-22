@@ -176,6 +176,6 @@ linkStyle 41 stroke-width:2px,fill:none,stroke:red;
 
 ## Support
 
-Report any issues to: https://github.com/DMarkStorage/Netapp_snapshot/issues. For any questions or concerns and send us an [email](daminimark@gmail.com)
+Report any issues to: https://github.com/DMarkStorage/Netapp_snapshot/issues. For any questions or concerns and send us an [email](mailto:daminimark@gmail.com)
 
 To learn more about ONTAP REST APIs, visit https://devnet.netapp.com/restapi.php 
