@@ -7,10 +7,9 @@ This repo contains simple program that `CREATE`, `LIST`, and `REMOVE`  NETAPP sn
 
 
 ### Features
-- `CREATE` a snapshot into a given Filesystem from a pool
-- `DELETE` a snapshot into a given Filesystem from a pool
+- `CREATE` a snapshot
+- `REMOVE` a snapshot
 - Get the `LIST` of Snapshots
-- Create a CSV and JSON file output containing all the snapshots
 - Helpful CLI
 
 ### Requirements
