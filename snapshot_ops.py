@@ -20,6 +20,7 @@ def get_args():
 	usage = """
 	Usage:
 		snapshot_ops.py -s <STORAGE> -vm <SVM> -vn <VOLUME_NAME> --create
+        snapshot_ops.py -s <STORAGE> -vm <SVM> -vn <VOLUME_NAME> --details
 		snapshot_ops.py -s <STORAGE> -vm <SVM> -vn <VOLUME_NAME> --list
 		snapshot_ops.py -s <STORAGE> -vm <SVM> -vn <VOLUME_NAME> --remove
 		snapshot_ops.py --version
@@ -128,6 +129,59 @@ def list_snapshots(storage, svm, vol_name):
         ])
     print(t)
 
+def get_snapshot(storage, svm, vol_name):
+    res = get_id_vol(svm, vol_name, storage)
+    uuid = res[0]
+    headers = res[1]
+
+    snap_name = input('Enter the name of SNAPSHOT: ')
+    snap_uuid = get_id_snapshot(storage, svm, vol_name,snap_name, headers)
+    data = {}
+    data['name'] = snap_name
+    url = "https://{}/api/storage/volumes/{}/snapshots/{}".format(
+                                storage, uuid,snap_uuid)
+
+    try:
+        resp = requests.get(
+            url,
+            headers=headers,
+            verify=False
+        )
+    except requests.exceptions.HTTPError as e:
+        print(e)
+        sys.exit(1)
+    except requests.exceptions.RequestException as e:
+        print(e)
+        sys.exit(1)
+
+    except json.decoder.JSONDecodeError as e:
+        print(e)
+        sys.exit(1)
+
+    except Exception as e:
+        print(e)
+        sys.exit(1)
+
+    url_res = resp.json()
+    if 'error' in url_res:
+        print(url_res)
+        sys.exit(1)
+    
+    data = dict(url_res)
+
+    t = PrettyTable(['Name', 'UUID','Volume','SVM', 'Creation time', 'Size'])
+
+    t.add_row([
+        data['name'],
+        data['uuid'],
+        data['volume']['name'],
+        data['svm']['name'],
+        data['create_time'],
+        data['size'],
+
+    ])
+    print(t)
+
 def remove_snapshot(storage, svm, vol_name):
     res = get_id_vol(svm, vol_name, storage)
     uuid = res[0]
@@ -183,6 +237,8 @@ def main(args):
 
     if args['--create']:
         create_snapshot(storage, svm, vol_name)
+    if args['--details']:
+        get_snapshot(storage, svm, vol_name)
     if args['--list']:
         list_snapshots(storage, svm, vol_name)
     if args['--remove']:
